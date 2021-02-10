@@ -1,0 +1,1 @@
+export const CLOUD_CONFIG = 'CLOUD_CONFIG';
