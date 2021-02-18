@@ -1,5 +1,6 @@
 import { CloudConfigModule, SpringCloudConfig } from '@nestjs-ext/cloud-config';
 import { INestApplication } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 describe('CloudConfigModule (e2e)', () => {
@@ -19,7 +20,10 @@ describe('CloudConfigModule (e2e)', () => {
   });
 
   it('/ (GET)', function () {
-    const springCloudConfig = app.get<SpringCloudConfig>(SpringCloudConfig);
-    expect( springCloudConfig.getConfig()).toBeDefined();    
+    const configService = app.get<ConfigService>(ConfigService);
+    expect(configService.get('testUrl')).toEqual('http://www.default.com');
+    expect(configService.get('spring.cloud.config.profiles')).toContain('local');
+    expect(configService.get('featureFlags.feature1')).toEqual('false');
+    expect(configService.get('featureFlags.feature2')).toEqual('${TEST}');
   });
 });
