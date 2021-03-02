@@ -1,6 +1,7 @@
 # project
 /libs
 /test
+/src
 .eslintrc.js
 .prettierrc
 nest-cli.json
