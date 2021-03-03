@@ -3,9 +3,9 @@ import { RetryState } from '../models';
 
 export class RetryUtils {
 
-  private static logger: Logger = new Logger('RetryUtils');
+  private static logger = new Logger('RetryUtils');
 
-  public static async retryFunctionWithState<T>(aFunction: Function, retryState: RetryState): Promise<T> {
+  public static async retryFunctionWithState<T>(aFunction: () => any, retryState: RetryState): Promise<T> {
     retryState.registerRetry();
 
     try {

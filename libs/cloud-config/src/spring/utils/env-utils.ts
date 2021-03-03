@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 export class EnvUtils {
 
-  private static logger: Logger = new Logger('EnvUtils');
+  private static logger = new Logger('EnvUtils');
 
   public static replaceTemplateStringWithEnv(obj: any): any {
     try {

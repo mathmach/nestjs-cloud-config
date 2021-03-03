@@ -1,14 +1,14 @@
-import { CloudConfigModule, SpringCloudConfig } from '@nestjs-ext/cloud-config';
+import { CloudConfigModule } from '@nestjs-ext/cloud-config';
 import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 
 describe('CloudConfigModule (e2e)', () => {
 
   let app: INestApplication;
 
   beforeEach(async function () {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    const moduleFixture = await Test.createTestingModule({
       imports: [CloudConfigModule.register({
         configPath: './test/fixtures',
         envFilePath: ['./test/fixtures/.env']

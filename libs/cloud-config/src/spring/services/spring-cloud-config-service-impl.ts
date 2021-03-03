@@ -9,10 +9,10 @@ import { DocumentUtils, RetryUtils } from '../utils';
 @Injectable()
 export class SpringCloudConfigServiceImpl {
 
-  private logger: Logger = new Logger('SpringCloudConfigServiceImpl');
+  private logger = new Logger('SpringCloudConfigServiceImpl');
 
   private bootstrapConfig: ConfigObject;
-  private config: ConfigObject | undefined;
+  private config: ConfigObject;
 
   constructor(
     private readonly springCloudConfigGatewayImpl: SpringCloudConfigGatewayImpl
@@ -20,13 +20,13 @@ export class SpringCloudConfigServiceImpl {
 
   public async getConfigFromServer(bootstrapConfig: ConfigObject): Promise<ConfigObject> {
     const configClientOptions: ConfigClientOptions = bootstrapConfig.spring.cloud.config;
-    const retryConfig: RetryOptions | undefined = configClientOptions.retry;
+    const retryConfig = configClientOptions.retry;
     let cloudConfig: ConfigObject = {};
 
     if (configClientOptions.enabled) {
       this.logger.debug('Spring Cloud Options: ' + JSON.stringify(configClientOptions));
 
-      const retryState: RetryState = new RetryState(retryConfig);
+      const retryState = new RetryState(retryConfig);
 
       try {
         cloudConfig = await this.springCloudConfigGatewayImpl.getConfigFromServer(configClientOptions);
@@ -50,8 +50,8 @@ export class SpringCloudConfigServiceImpl {
   }
 
   private async readBootstrapConfig(options: CloudConfigOptions): Promise<ConfigObject> {
-    const theBootstrapPath: string = options.bootstrapPath !== undefined ? options.bootstrapPath : options.configPath;
-    let thisBootstrapConfig: ConfigObject = DocumentUtils.readYamlAsDocument(`${theBootstrapPath}/bootstrap.yml`);
+    const theBootstrapPath = options.bootstrapPath !== undefined ? options.bootstrapPath : options.configPath;
+    const thisBootstrapConfig = DocumentUtils.readYamlAsDocument(`${theBootstrapPath}/bootstrap.yml`);
 
     const { error } = BootstrapConfigSchema.validate(thisBootstrapConfig, { allowUnknown: true });
     if (error) {
@@ -63,14 +63,14 @@ export class SpringCloudConfigServiceImpl {
     return thisBootstrapConfig;
   }
 
-  private async readApplicationConfig(appConfigPath: string, activeProfiles: string[]): Promise<ConfigObject> {
-    const applicationConfig: ConfigObject = DocumentUtils.readYamlAsDocument(appConfigPath + '/application.yml', activeProfiles);
-    const appConfigs: ConfigObject[] = [applicationConfig];
+  private async readApplicationConfig(appConfigPath: string, activeProfiles: Array<string>): Promise<ConfigObject> {
+    const applicationConfig = DocumentUtils.readYamlAsDocument(appConfigPath + '/application.yml', activeProfiles);
+    const appConfigs = [applicationConfig];
     activeProfiles?.forEach((activeProfile: string) => {
       const profileSpecificYaml = 'application-' + activeProfile + '.yml';
       const profileSpecificYamlPath = appConfigPath + '/' + profileSpecificYaml;
       if (fs.existsSync(profileSpecificYamlPath)) {
-        const propDoc: any = yaml.load(fs.readFileSync(profileSpecificYamlPath, 'utf8'));
+        const propDoc = yaml.load(fs.readFileSync(profileSpecificYamlPath, 'utf8'));
         const thisDoc = DocumentUtils.parsePropertiesToObjects(propDoc);
         appConfigs.push(thisDoc);
       } else {
@@ -86,12 +86,12 @@ export class SpringCloudConfigServiceImpl {
   }
 
   private async readConfig(options: CloudConfigOptions): Promise<ConfigObject> {
-    let propertiesObjects: ConfigObject[] = [];
+    const propertiesObjects: Array<ConfigObject> = [];
 
     this.bootstrapConfig = await this.readBootstrapConfig(options);
     this.logger.debug('Using Bootstrap Config: ' + JSON.stringify(this.bootstrapConfig));
 
-    const applicationConfig: ConfigObject = await this.readApplicationConfig(options.configPath, this.bootstrapConfig.spring?.cloud?.config?.profiles);
+    const applicationConfig = await this.readApplicationConfig(options.configPath, this.bootstrapConfig.spring?.cloud?.config?.profiles);
     this.logger.debug('Using Application Config: ' + JSON.stringify(applicationConfig));
     propertiesObjects.push(applicationConfig);
 
@@ -102,7 +102,7 @@ export class SpringCloudConfigServiceImpl {
       this.bootstrapConfig.spring.cloud.config.name = applicationConfig.spring.cloud.config.name;
     }
 
-    const cloudConfig: ConfigObject = await this.readCloudConfig(this.bootstrapConfig);
+    const cloudConfig = await this.readCloudConfig(this.bootstrapConfig);
     propertiesObjects.push(cloudConfig);
 
     propertiesObjects.push(this.bootstrapConfig);

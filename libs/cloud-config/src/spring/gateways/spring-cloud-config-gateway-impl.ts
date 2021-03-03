@@ -9,7 +9,7 @@ export class SpringCloudConfigGatewayImpl {
 
   public async getConfigFromServer(configClientOptions: ConfigClientOptions): Promise<ConfigObject> {
     let cloudConfig: ConfigObject = {};
-    const cloudConfigProperties: ConfigObject | undefined = await CloudConfigClient.load(configClientOptions, undefined);
+    const cloudConfigProperties: ConfigObject = await CloudConfigClient.load(configClientOptions, undefined);
     if (cloudConfigProperties) {
       cloudConfigProperties.forEach(function (key: string, value: any) {
         cloudConfig[key] = value;

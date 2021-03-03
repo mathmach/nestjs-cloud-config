@@ -4,7 +4,7 @@ import { RetryOptions } from './retry';
 export interface CloudConfigOptions extends ConfigModuleOptions {
     bootstrapPath?: string;
     configPath: string;
-    envFilePath?: string | string[];
+    envFilePath?: string | Array<string>;
 }
 
 export interface ConfigClientRetryOptions extends RetryOptions {}

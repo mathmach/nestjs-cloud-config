@@ -11,7 +11,7 @@ describe('RetryState', function () {
   describe('#constructor()', function () {
 
     it('should initialize state with default values', async function () {
-      const retryState: RetryState = new RetryState();
+      const retryState = new RetryState();
 
       assert.deepEqual(retryState.active, false);
       assert.deepEqual(retryState.attempts, 0);
@@ -30,7 +30,7 @@ describe('RetryState', function () {
         'initial-interval': 1500,
         multiplier: 1.5
       };
-      const retryState: RetryState = new RetryState(retryConfig);
+      const retryState = new RetryState(retryConfig);
 
       assert.deepEqual(retryState.active, false);
       assert.deepEqual(retryState.attempts, 0);
@@ -46,7 +46,7 @@ describe('RetryState', function () {
   describe('#registerRetry()', function () {
 
     it('Should set active and init attempts and interval on first register', async function () {
-      const retryState: RetryState = new RetryState();
+      const retryState = new RetryState();
 
       retryState.registerRetry();
 
@@ -60,7 +60,7 @@ describe('RetryState', function () {
     });
 
     it('Should set active and increment attempts and interval on second register', async function () {
-      const retryState: RetryState = new RetryState();
+      const retryState = new RetryState();
 
       retryState.registerRetry();
       retryState.registerRetry();
@@ -75,7 +75,7 @@ describe('RetryState', function () {
     });
 
     it('Should not allow attempts to exceed max', async function () {
-      const retryState: RetryState = new RetryState({
+      const retryState = new RetryState({
         enabled: true,
         'max-attempts': 1
       });
@@ -85,7 +85,7 @@ describe('RetryState', function () {
     });
 
     it('Should not allow interval to exceed max', async function () {
-      const retryState: RetryState = new RetryState({
+      const retryState = new RetryState({
         enabled: true,
         'max-interval': 1050
       });
@@ -101,7 +101,7 @@ describe('RetryState', function () {
   describe('#reset()', function () {
 
     it('should reset state with initial values', async function () {
-      const retryState: RetryState = new RetryState();
+      const retryState = new RetryState();
 
       retryState.registerRetry();
       retryState.registerRetry();
