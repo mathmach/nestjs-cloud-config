@@ -21,6 +21,7 @@ export class CloudConfigModule {
             const springCloudConfig = new SpringCloudConfigServiceImpl(springCloudConfigGatewayImpl);
             process.env = EnvUtils.replaceTemplateStringWithEnv(process.env);
             return await springCloudConfig.load(options)
+              .catch(() => null)
           }]
         })
       ],

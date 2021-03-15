@@ -31,12 +31,29 @@ export class DecoratorService {
 
       if (metadata?.decorator) {
         metadata.params = metadata.params
-          .filter((param: any) => typeof param === 'string')
           .map((param: any) => {
             const regex = new RegExp('\\${(.*?)}', 'g');
-            const match = regex.exec(param);
-            if (match) {
-              param = this.configService.get<string>(match[1]) || param;
+            let match: RegExpExecArray;
+            switch (typeof param) {
+              case 'string':
+                match = regex.exec(param);
+                if (match) {
+                  param = this.configService.get<string>(match[1]) || param;
+                }
+                break;
+              case 'object':
+                for (const key in param) {
+                  if (Object.prototype.hasOwnProperty.call(param, key)) {
+                    const element = param[key];
+                    if (typeof element === 'string') {
+                      match = regex.exec(element);
+                      if (match) {
+                        param[key] = this.configService.get(match[1]) || process.env[match[1]] || param;
+                      }
+                    }
+                  }
+                }
+                break;
             }
             return param;
           })
