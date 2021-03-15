@@ -14,10 +14,13 @@ export class DecoratorService {
     private readonly reflector: Reflector,
     private readonly configService: ConfigService
   ) {
-    this.modules.forEach(({ controllers }) => this.bindListeners(controllers));
+    this.modules.forEach(({ providers, controllers }) => {
+      this.bindListeners(providers);
+      this.bindListeners(controllers);
+    });
   }
 
-  public bindListeners(controllers: Map<string, InstanceWrapper<Controller>>) {
+  public bindListeners(controllers: Map<string, InstanceWrapper<Controller | InjectableInterface>>) {
     controllers.forEach(wrapper => this.registerPatternHandlers(wrapper));
   }
 
