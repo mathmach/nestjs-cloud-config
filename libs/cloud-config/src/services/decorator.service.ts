@@ -32,13 +32,11 @@ export class DecoratorService {
       if (metadata?.decorator) {
         metadata.params = metadata.params
           .map((param: any) => {
-            const regex = new RegExp('\\${(.*?)}', 'g');
-            let match: RegExpExecArray;
             switch (typeof param) {
               case 'string':
-                match = regex.exec(param);
-                if (match) {
-                  param = this.configService.get<string>(match[1]) || param;
+                const value = this.parseConfigString(param);
+                if (value) {
+                  param = value;
                 }
                 break;
               case 'object':
@@ -46,9 +44,9 @@ export class DecoratorService {
                   if (Object.prototype.hasOwnProperty.call(param, key)) {
                     const element = param[key];
                     if (typeof element === 'string') {
-                      match = regex.exec(element);
-                      if (match) {
-                        param[key] = this.configService.get(match[1]) || process.env[match[1]] || param;
+                      const value = this.parseConfigString(element);
+                      if (value) {
+                        param[key] = value;
                       }
                     }
                   }
@@ -65,6 +63,18 @@ export class DecoratorService {
         );
       }
     });
+  }
+
+  private parseConfigString(configString: string): string {
+    const regexp = new RegExp('\\${(.*?)}', 'g');
+    const regex = regexp.exec(configString);
+    if (regex) {
+      const values: Array<string> = regex[1].split(':');
+      const key = values[0];
+      const defaultValue = values[1];
+      return this.configService.get<string>(key, defaultValue);      
+    }
+    return null;
   }
 
 }
