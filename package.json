@@ -1,6 +1,6 @@
 {
   "name": "nestjs-cloud-config",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "author": "Matheus Machado Guerzoni Duarte <mmgd23@gmail.com>",
   "private": false,
@@ -17,7 +17,7 @@
   "homepage": "https://github.com/mathmach/nestjs-cloud-config#readme",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "nest build cloud-config --tsc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -28,7 +28,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "deploy": "npm run build && npm publish"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
