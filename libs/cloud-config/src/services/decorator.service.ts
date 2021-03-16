@@ -20,52 +20,59 @@ export class DecoratorService {
     });
   }
 
-  public bindListeners(controllers: Map<string, InstanceWrapper<Controller | InjectableInterface>>) {
-    controllers.forEach(wrapper => this.registerPatternHandlers(wrapper));
+  public bindListeners(instances: Map<string, InstanceWrapper<Controller | InjectableInterface>>): void {
+    instances.forEach((wrapper: InstanceWrapper<Controller | InjectableInterface>) => this.registerPatternHandlers(wrapper));
   }
 
-  public async registerPatternHandlers(instanceWrapper: InstanceWrapper<Controller | InjectableInterface>) {
-    const propNames = Object.getOwnPropertyNames(instanceWrapper.metatype.prototype);
-    propNames.forEach((prop: string) => {
-      const metadata: { decorator: any, params: Array<any> } = this.reflector.get(
-        CONFIGURATION,
-        instanceWrapper.metatype.prototype[prop]
-      );
-
-      if (metadata?.decorator) {
-        metadata.params = metadata.params
-          .map((param: any) => {
-            switch (typeof param) {
-              case 'string':
-                const value = this.parseConfigString(param);
-                if (value) {
-                  param = value;
-                }
-                break;
-              case 'object':
-                for (const key in param) {
-                  if (Object.prototype.hasOwnProperty.call(param, key)) {
-                    const element = param[key];
-                    if (typeof element === 'string') {
-                      const value = this.parseConfigString(element);
-                      if (value) {
-                        param[key] = value;
+  public registerPatternHandlers(instanceWrapper: InstanceWrapper<Controller | InjectableInterface>): void {
+    if (instanceWrapper.metatype?.prototype) {
+      const propNames = Object.getOwnPropertyNames(instanceWrapper.metatype.prototype);
+      propNames.forEach((prop: string) => {
+        let target: any;
+        try {
+          target = instanceWrapper.metatype.prototype[prop];
+        } catch { }
+        if (target) {
+          const metadata: { decorator: any, params: Array<any> } = this.reflector.get(
+            CONFIGURATION,
+            target
+          );
+          if (metadata?.decorator) {
+            metadata.params = metadata.params
+              .map((param: any) => {
+                switch (typeof param) {
+                  case 'string':
+                    const value = this.parseConfigString(param);
+                    if (value) {
+                      param = value;
+                    }
+                    break;
+                  case 'object':
+                    for (const key in param) {
+                      if (Object.prototype.hasOwnProperty.call(param, key)) {
+                        const element = param[key];
+                        if (typeof element === 'string') {
+                          const value = this.parseConfigString(element);
+                          if (value) {
+                            param[key] = value;
+                          }
+                        }
                       }
                     }
-                  }
+                    break;
                 }
-                break;
-            }
-            return param;
-          })
-        Reflect.decorate(
-          [metadata.decorator(...metadata.params)],
-          instanceWrapper.metatype.prototype,
-          prop,
-          Reflect.getOwnPropertyDescriptor(instanceWrapper.metatype.prototype, prop)
-        );
-      }
-    });
+                return param;
+              })
+            Reflect.decorate(
+              [metadata.decorator(...metadata.params)],
+              instanceWrapper.metatype.prototype,
+              prop,
+              Reflect.getOwnPropertyDescriptor(instanceWrapper.metatype.prototype, prop)
+            );
+          }
+        }
+      });
+    }
   }
 
   private parseConfigString(configString: string): string {
@@ -75,7 +82,7 @@ export class DecoratorService {
       const values: Array<string> = regex[1].split(':');
       const key = values[0];
       const defaultValue = values[1];
-      return this.configService.get<string>(key, defaultValue);      
+      return this.configService.get<string>(key, defaultValue);
     }
     return null;
   }
