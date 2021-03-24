@@ -1,8 +1,8 @@
 
 import { Injectable } from '@nestjs/common';
 import * as CloudConfigClient from 'nice-cloud-config-client';
-import { ConfigClientOptions, ConfigObject } from '../models';
-import { DocumentUtils } from '../utils';
+import { ConfigClientOptions, ConfigObject } from '../models/cloud-config';
+import { DocumentUtils } from '../utils/document-utils';
 
 @Injectable()
 export class SpringCloudConfigGatewayImpl {

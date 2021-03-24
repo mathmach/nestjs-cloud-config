@@ -2,9 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import { SpringCloudConfigGatewayImpl } from '../gateways/spring-cloud-config-gateway-impl';
-import { CloudConfigOptions, ConfigClientOptions, ConfigObject, RetryOptions, RetryState } from '../models';
+import { CloudConfigOptions, ConfigClientOptions, ConfigObject } from '../models/cloud-config';
+import { RetryState } from '../models/retry';
 import { BootstrapConfigSchema, CloudConfigOptionsSchema } from '../schemas';
-import { DocumentUtils, RetryUtils } from '../utils';
+import { DocumentUtils } from '../utils/document-utils';
+import { RetryUtils } from '../utils/retry-utils';
 
 @Injectable()
 export class SpringCloudConfigServiceImpl {

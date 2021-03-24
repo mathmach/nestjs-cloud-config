@@ -1,8 +1,11 @@
 #Default config properties
 testUrl: http://www.default.com
 featureFlags:
-  feature1: ${TEST:false}
-  feature2: ${TEST}
+  feature1: ${TEST}
+  feature2: ${TEST:false}
+  feature3: ${TEST2}
+  feature4: ${TEST2:false}
+  feature5: ${TEST3:false:true}
 
 ---
 # Development config properties

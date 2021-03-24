@@ -4,7 +4,7 @@ import { Injectable as InjectableInterface } from '@nestjs/common/interfaces/inj
 import { ConfigService } from '@nestjs/config';
 import { ModulesContainer, Reflector } from '@nestjs/core';
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
-import { CONFIGURATION } from '../constants';
+import { CONFIGURATION } from '../constants/constants';
 
 @Injectable()
 export class DecoratorService {
@@ -62,7 +62,7 @@ export class DecoratorService {
                     break;
                 }
                 return param;
-              })
+              });
             Reflect.decorate(
               [metadata.decorator(...metadata.params)],
               instanceWrapper.metatype.prototype,

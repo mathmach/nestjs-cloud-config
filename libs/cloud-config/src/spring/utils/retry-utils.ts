@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { RetryState } from '../models';
+import { RetryState } from '../models/retry';
 
 export class RetryUtils {
 

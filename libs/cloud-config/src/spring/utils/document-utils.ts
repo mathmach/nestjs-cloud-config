@@ -2,9 +2,9 @@ import { Logger } from '@nestjs/common';
 import * as extend from 'extend';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import { Document } from '../models';
 import * as _ from 'lodash';
-import { EnvUtils } from './env-utils'
+import { Document } from '../models/cloud-config';
+import { EnvUtils } from './env-utils';
 
 export class DocumentUtils {
 
