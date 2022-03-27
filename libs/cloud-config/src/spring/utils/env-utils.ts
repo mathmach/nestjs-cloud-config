@@ -25,14 +25,13 @@ export class EnvUtils {
               value = _.get(obj, key) || defaultValue;
               if (!value) {
                 this.logger.warn(`Missing env found: ${key}`);
-                config = config.replace(match, '');
               } else {
                 config = config.replace(match, value);
               }
             }
           });
         strings = this.getAllTemplateStrings(config)
-          .filter((regex: RegExpExecArray) => notFound.findIndex((r: RegExpExecArray) => r[0] === regex[0]) === -1)
+          .filter((regex: RegExpExecArray) => notFound.findIndex((r: RegExpExecArray) => r[0] === regex[0]) === -1);
       }
       this.logger.debug('Successfully replaced template strings with local envs');
       return this.removeEmpty(JSON.parse(config));

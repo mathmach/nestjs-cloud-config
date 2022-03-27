@@ -14,7 +14,7 @@ export class DecoratorService {
     private readonly reflector: Reflector,
     private readonly configService: ConfigService
   ) {
-    this.modules.forEach(({ providers, controllers }) => {
+    this.modules.forEach(({ providers, controllers }: { providers: Map<any, any>, controllers: Map<any, any> }) => {
       this.bindListeners(providers);
       this.bindListeners(controllers);
     });

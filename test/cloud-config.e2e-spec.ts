@@ -23,7 +23,7 @@ describe('CloudConfigModule (e2e)', () => {
     const configService = app.get<ConfigService>(ConfigService);
     expect(configService.get('testUrl')).toEqual('http://www.default.com');
     expect(configService.get('spring.cloud.config.profiles')).toContain('local');
-    expect(configService.get('featureFlags.feature1')).toBeUndefined();
+    expect(configService.get('featureFlags.feature1')).toEqual('${TEST}');
     expect(configService.get('featureFlags.feature2')).toEqual('false');
     expect(configService.get('featureFlags.feature3')).toEqual('true');
     expect(configService.get('featureFlags.feature4')).toEqual('true');

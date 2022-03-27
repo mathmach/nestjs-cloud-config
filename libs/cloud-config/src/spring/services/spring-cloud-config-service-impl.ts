@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
+import * as _ from 'lodash';
 import * as yaml from 'js-yaml';
 import { SpringCloudConfigGatewayImpl } from '../gateways/spring-cloud-config-gateway-impl';
 import { CloudConfigOptions, ConfigClientOptions, ConfigObject } from '../models/cloud-config';
@@ -60,7 +61,7 @@ export class SpringCloudConfigServiceImpl {
       throw new Error(error.details[0].message);
     }
 
-    thisBootstrapConfig.spring.cloud.config.profiles = thisBootstrapConfig.spring?.cloud?.config?.profiles?.split(',');
+    _.set(thisBootstrapConfig, 'spring.cloud.config.profiles', thisBootstrapConfig.spring?.cloud?.config?.profiles?.split(',') || false);
 
     return thisBootstrapConfig;
   }
