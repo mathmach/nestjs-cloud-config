@@ -1,6 +1,6 @@
 {
   "name": "nestjs-cloud-config",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
   "author": "Matheus Machado Guerzoni Duarte <mmgd23@gmail.com>",
   "private": false,

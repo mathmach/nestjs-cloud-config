@@ -28,11 +28,8 @@ export class DecoratorService {
     if (instanceWrapper.metatype?.prototype) {
       const propNames = Object.getOwnPropertyNames(instanceWrapper.metatype.prototype);
       propNames.forEach((prop: string) => {
-        let target: any;
         try {
-          target = instanceWrapper.metatype.prototype[prop];
-        } catch { }
-        if (target) {
+          let target: any = instanceWrapper.metatype.prototype[prop];
           const metadata: { decorator: any, params: Array<any> } = this.reflector.get(
             CONFIGURATION,
             target
@@ -70,7 +67,7 @@ export class DecoratorService {
               Reflect.getOwnPropertyDescriptor(instanceWrapper.metatype.prototype, prop)
             );
           }
-        }
+        } catch { }
       });
     }
   }
