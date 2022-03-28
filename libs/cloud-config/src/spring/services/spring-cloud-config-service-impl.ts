@@ -22,28 +22,30 @@ export class SpringCloudConfigServiceImpl {
   ) { }
 
   public async getConfigFromServer(bootstrapConfig: ConfigObject): Promise<ConfigObject> {
-    const configClientOptions: ConfigClientOptions = bootstrapConfig.spring.cloud.config;
-    const retryConfig = configClientOptions.retry;
     let cloudConfig: ConfigObject = {};
+    const configClientOptions: ConfigClientOptions = bootstrapConfig?.spring?.cloud?.config;
 
-    if (configClientOptions.enabled) {
-      this.logger.debug('Spring Cloud Options: ' + JSON.stringify(configClientOptions));
+    if (configClientOptions) {
+      const retryConfig = configClientOptions.retry;
 
-      const retryState = new RetryState(retryConfig);
+      if (configClientOptions.enabled) {
+        this.logger.debug('Spring Cloud Options: ' + JSON.stringify(configClientOptions));
 
-      try {
-        cloudConfig = await this.springCloudConfigGatewayImpl.getConfigFromServer(configClientOptions);
-        this.logger.debug('Cloud Config: ' + JSON.stringify(cloudConfig));
-      } catch (error) {
-        this.logger.warn('Error reading cloud config: ', error);
-        if (configClientOptions['fail-fast'] === true) {
-          if (retryConfig && retryConfig.enabled === true) {
-            cloudConfig = await RetryUtils.retryFunctionWithState<ConfigObject>(
-              () => this.springCloudConfigGatewayImpl.getConfigFromServer(configClientOptions),
-              retryState
-            );
-          } else {
-            throw error;
+        const retryState = new RetryState(retryConfig);
+        try {
+          cloudConfig = await this.springCloudConfigGatewayImpl.getConfigFromServer(configClientOptions);
+          this.logger.debug('Cloud Config: ' + JSON.stringify(cloudConfig));
+        } catch (error) {
+          this.logger.warn('Error reading cloud config: ', error);
+          if (configClientOptions['fail-fast'] === true) {
+            if (retryConfig && retryConfig.enabled === true) {
+              cloudConfig = await RetryUtils.retryFunctionWithState<ConfigObject>(
+                () => this.springCloudConfigGatewayImpl.getConfigFromServer(configClientOptions),
+                retryState
+              );
+            } else {
+              throw error;
+            }
           }
         }
       }
@@ -61,7 +63,10 @@ export class SpringCloudConfigServiceImpl {
       throw new Error(error.details[0].message);
     }
 
-    _.set(thisBootstrapConfig, 'spring.cloud.config.profiles', thisBootstrapConfig.spring?.cloud?.config?.profiles?.split(',') || false);
+    const profiles: Array<string> = thisBootstrapConfig.spring?.cloud?.config?.profiles?.replace(/\s/g, '').split(',') || [];
+    if (profiles.length > 0) {
+      _.set(thisBootstrapConfig, 'spring.cloud.config.profiles', profiles);
+    }
 
     return thisBootstrapConfig;
   }
