@@ -34,11 +34,13 @@ export class DocumentUtils {
   public static readYaml(relativePath: string, activeProfiles?: Array<string>): Document {
     this.logger.debug('loading config file from: ' + relativePath);
     const doc: Document = {};
-    yaml.loadAll(fs.readFileSync(relativePath, 'utf8'), (thisDoc: any) => {
-      if (this.shouldUseDocument(thisDoc, activeProfiles)) {
-        extend(true, doc, thisDoc);
-      }
-    });
+    if (fs.existsSync(relativePath)) {
+      yaml.loadAll(fs.readFileSync(relativePath, 'utf8'), (thisDoc: any) => {
+        if (this.shouldUseDocument(thisDoc, activeProfiles)) {
+          extend(true, doc, thisDoc);
+        }
+      });
+    }
 
     return doc;
   };
